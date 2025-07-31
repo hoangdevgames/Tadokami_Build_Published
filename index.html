@@ -174,8 +174,17 @@
     function sendDataToUnity(dataType, data) {
         if (unityInstance && unityInstance.SendMessage) {
             try {
-                unityInstance.SendMessage("__[ST]_WebGLBridge", dataType, data);
-                console.log(`Data sent to Unity - ${dataType}:`, data);
+                // Xác định receiver object dựa trên dataType
+                let receiverObject;
+                if (dataType === "OnTaskReceived") {
+                    receiverObject = "__[ST]_ExternalTaskManager";
+                } else {
+                    // Các message khác gửi cho WebGLBridge
+                    receiverObject = "__[ST]_WebGLBridge";
+                }
+                
+                unityInstance.SendMessage(receiverObject, dataType, data);
+                console.log(`Data sent to Unity - ${receiverObject}.${dataType}:`, data);
             } catch (error) {
                 console.error(`Error sending ${dataType} to Unity:`, error);
             }
