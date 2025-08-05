@@ -14,13 +14,13 @@ window.GameConfig = {
         withLoginOnExternalBrowser: true
     },
     firebase: {
-        apiKey: "AIzaSyCEot6AbBMm2Bi7I0mFFbU7vMWYtkUHnhU",
-        authDomain: "tadokami-alpha-82264.firebaseapp.com",
-        projectId: "tadokami-alpha-82264",
-        storageBucket: "tadokami-alpha-82264.firebasestorage.app",
-        messagingSenderId: "993427715124",
-        appId: "1:993427715124:web:942bdd80e622c6ee980661",
-        measurementId: "G-H86CKX7QL9"
+        apiKey: "AIzaSyBTC3MPiDICYYAO8bTbZ0c_44yPoJjFjq8",
+        authDomain: "tadokami-line.firebaseapp.com",
+        projectId: "tadokami-line",
+        storageBucket: "tadokami-line.firebasestorage.app",
+        messagingSenderId: "812391039700",
+        appId: "1:812391039700:web:fb766775fa0a1618b67141",
+        measurementId: "G-KNHWS1NYET"
     },
     game: {
         productName: "AutoRPGAdventure",
