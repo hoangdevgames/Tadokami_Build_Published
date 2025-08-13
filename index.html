@@ -178,7 +178,11 @@
                 let receiverObject;
                 if (dataType === "OnTaskReceived") {
                     receiverObject = "__[ST]_ExternalTaskManager";
-                } else {
+                } 
+                else if(dataType === "OnTreasureHuntDataReceived") {
+                    receiverObject = "__[ST]_ExternalTaskManager";
+                }
+                else {
                     // Các message khác gửi cho WebGLBridge
                     receiverObject = "__[ST]_WebGLBridge";
                 }
@@ -303,6 +307,31 @@
                             delete window.currentTaskId;
                         } else {
                             console.log("Missing taskId for minDuration:", minDuration);
+                        }
+                    }
+                    else if (param.startsWith('redirectUrl_')) {
+                        const redirectUrl = decodeURIComponent(param.split('_')[1]);
+                        console.log('Redirect URL:', redirectUrl);
+                        // Lưu redirectUrl để sử dụng sau
+                        window.currentRedirectUrl = redirectUrl;
+                    }
+                    else if (param.startsWith('treasureHuntTaskId_')) {
+                        const treasureHuntTaskId = param.split('_')[1];
+                        console.log('Treasure Hunt Task ID:', treasureHuntTaskId);
+                        
+                        // Gửi data cho Unity khi có đủ redirectUrl và treasureHuntTaskId
+                        if (window.currentRedirectUrl) {
+                            const treasureHuntData = {
+                                redirectUrl: window.currentRedirectUrl,           // URL để redirect
+                                treasureHuntTaskId: parseInt(treasureHuntTaskId)  // ID của task type 7 (Treasure Hunt)
+                            };
+                            sendDataToUnity("OnTreasureHuntDataReceived", JSON.stringify(treasureHuntData));
+                            console.log("Complete treasure hunt data sent to ExternalTaskManager:", treasureHuntData);
+                            
+                            // Clean up
+                            delete window.currentRedirectUrl;
+                        } else {
+                            console.log("Missing redirectUrl for treasure hunt task");
                         }
                     }
                     else {
@@ -661,6 +690,27 @@
         console.log("Function called from Unity with parameter: " + parameter);
         // Thực hiện các hành động cần thiết ở đây
         alert("Message from Unity: " + parameter);
+    }
+    
+    // Function để Unity gọi để mở URL bên ngoài
+    function openExternalUrl(url) {
+        console.log("Opening external URL from Unity:", url);
+        try {
+            if (window.liff && liff.isInClient()) {
+                liff.openWindow({
+                    url: url,
+                    external: true
+                });
+                console.log("Opened URL in external browser via LIFF");
+            } else {
+                window.open(url, '_blank');
+                console.log("Opened URL in new tab");
+            }
+        } catch (error) {
+            console.error("Error opening external URL:", error);
+            // Fallback to window.open
+            window.open(url, '_blank');
+        }
     }
     
     // Thêm các hàm khác mà bạn muốn gọi từ Unity
