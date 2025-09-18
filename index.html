@@ -315,21 +315,30 @@
                         // Lưu redirectUrl để sử dụng sau
                         window.currentRedirectUrl = redirectUrl;
                     }
+                    else if (param.startsWith('treasureHuntTaskType_')) {
+                        const taskType = decodeURIComponent(param.split('_')[1]);
+                        console.log('Treasure Hunt Task Type:', taskType);
+                        // Lưu redirectUrl để sử dụng sau
+                        window.treasureHuntTaskType = taskType;
+                    }
                     else if (param.startsWith('treasureHuntTaskId_')) {
                         const treasureHuntTaskId = param.split('_')[1];
                         console.log('Treasure Hunt Task ID:', treasureHuntTaskId);
                         
                         // Gửi data cho Unity khi có đủ redirectUrl và treasureHuntTaskId
                         if (window.currentRedirectUrl) {
+                            if(window.treasureHuntTaskType == null) window.treasureHuntTaskType = 2;
                             const treasureHuntData = {
                                 redirectUrl: window.currentRedirectUrl,           // URL để redirect
-                                treasureHuntTaskId: parseInt(treasureHuntTaskId)  // ID của task type 7 (Treasure Hunt)
+                                treasureHuntTaskId: parseInt(treasureHuntTaskId),  // ID của task type 7 (Treasure Hunt)
+                                treasureHuntTaskType: parseInt(window.treasureHuntTaskType)
                             };
                             sendDataToUnity("OnTreasureHuntDataReceived", JSON.stringify(treasureHuntData));
                             console.log("Complete treasure hunt data sent to ExternalTaskManager:", treasureHuntData);
                             
                             // Clean up
                             delete window.currentRedirectUrl;
+                            delete window.treasureHuntTaskType;
                         } else {
                             console.log("Missing redirectUrl for treasure hunt task");
                         }
